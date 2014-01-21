@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Protect It! - Password Generator</title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/protectit.css">
+        <meta charset="UTF-8">
+        <!--[if gte IE 9]>
+          <style type="text/css">
+            .gradient {
+               filter: none;
+            }
+          </style>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>
+                	<small class="subtitle">Developpez.com Project</small>
+                	<br>
+                	Protect It! &mdash; Intuitive Password Generator
+                	<small class="author">
+                		Rapha&euml;l MARQUES
+                	</small>
+                </h1>
+            </div>
+            <div class="row" role="main">
+                <form role="form">
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Creation</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12 text-left">
+                                        <div class="form-group">
+                                            <label for="userInput">Password</label>
+                                            <input type="text" onKeyDown="PI.rollActions()" id="userInput" class="form-control fusion" placeholder="Type or generate password">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <div class="form-group">
+                                            <div class="btn-group" data-toggle="buttons">
+                                                <label class="btn btn-default btn-sm">
+                                                    <input type="radio" name="canvas_mode" onchange="PI.displayOrHidePassword()"><span class="glyphicon glyphicon-eye-close"></span> Hide
+                                                </label>
+                                                <label class="btn btn-default btn-sm active">
+                                                    <input type="radio" name="canvas_mode" onchange="PI.displayOrHidePassword()" checked><span class="glyphicon glyphicon-eye-open"></span> View
+                                                </label>
+                                            </div>
+
+                                            <div class="btn-group" data-toggle="buttons">
+                                                <label class="btn btn-default btn-sm active">
+                                                    <input type="radio" name="canvas_mode" onchange="PI.readOnlyOrWritePassword()" checked><span class="glyphicon glyphicon-pencil"></span> Writeable
+                                                </label>
+                                                <label class="btn btn-default btn-sm">
+                                                    <input type="radio" name="canvas_mode" onchange="PI.readOnlyOrWritePassword()"><span class="glyphicon glyphicon-asterisk"></span> Read-Only
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-success btn-sm" onclick="PI.generatePassword()"><span class="glyphicon glyphicon-repeat"></span> Generate</button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="PI.clearPassword()"><span class="glyphicon glyphicon-trash"></span> Clear</button>
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="PI.copyToClipboard()"><span class="glyphicon glyphicon-file"></span> Copy to Clipboard</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-left">
+                                        <label id="hashesLabel" style="display: none;">QRCodeHash / VisualHash</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <div class="form-group">
+                                            <div id="hashes"></div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <div id="spellerDiv" class="row">
+                                    <div class="col-md-12 text-left">
+                                        <div class="form-group">
+                                            <label for="spellerInput">Spelled Password</label>
+                                            <input type="text" id="spellerInput" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Options</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="spinbox">Length</label>
+                                    <input id="spinbox" type="number" class="form-control text-center" min="2" max="128" step="1" value="16"/> 
+                                </div>
+                                <label>Composition</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="symbols"    type="checkbox" checked/> <span class="glyphicon glyphicon-gbp"></span> Symbols (e.g. @#$)<br><br>
+                                    </label>
+                                    <label>
+                                        <input id="lowercase"  type="checkbox" checked/> <span class="glyphicon glyphicon-lower"><strong>a</strong></span> Lowercase (e.g. abcd)<br><br>
+                                    </label>
+                                    <label>
+                                        <input id="uppercase"  type="checkbox" checked/> <span class="glyphicon glyphicon-font"></span> Uppercase (e.g. ABCD)<br><br>
+                                    </label>
+                                    <label>
+                                        <input id="numbers"    type="checkbox" checked/> <span class="glyphicon glyphicon-number"><strong>3</strong></span> Numbers (e.g. 0123)<br><br>
+                                    </label>
+                                </div>
+                                <label>Reminders</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="vishash"    type="checkbox" checked/> <span class="glyphicon glyphicon-picture"></span> Generate VisualHash<br><br>
+                                    </label>
+                                    <label>
+                                        <input id="qrcodehash" type="checkbox" checked/> <span class="glyphicon glyphicon-qrcode"></span> Generate QRCodeHash<br><br>
+                                    </label>
+                                    <label>
+                                        <input id="spellPassword" type="checkbox" checked/> <span class="glyphicon glyphicon-list"></span> Spell password
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Complexity and Hackability</h3>
+                            </div>
+                            <div class="panel-body">   
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="progressbar">
+                                            <div id="progress" class="progressbarValid gradient" style="width: 0%;"></div>
+                                        </div>
+                                        <div id="status">
+                                            <div id="complexity">0%</div>
+                                            <div id="complexityLabel">Complexity</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-left">
+                                        <div id="passwordIndicator">
+                                            <div id="possibilities"></div>
+                                            <p class="form-group">
+                                                Time to crack using <input type="text" class="form-control-static" onKeyUp="PI.calculatePasswordComplexityToCrack()" id="nodes" value="4" size="5" /> core(s):
+                                            </p>
+                                            <div id="rates"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Help</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <label>How to create a password</label>
+                                    <p>
+                                        The password can be randomly generated using the green "Generate" button, or typed directly in if the field is "Writeable".
+                                    </p>
+                                    <br>
+                                    <label>The password field</label>
+                                    <p>
+                                        When the password field his in "password" mode (e.g. the chars are masked by black dots), a visual colored hash appears in its background.
+                                        <br>
+                                        It comes in completion with the VisualHash image available in the options.
+                                    </p>
+                                    <br>
+                                    <label>QRCodeHash, VisualHash and Password spelling</label>
+                                    <p>
+                                        All of them intend to make it easy for you to remember your password.
+                                        <br>
+                                        <br>
+                                        <span class="number_list">1) QRCodeHash</span>
+                                        <br>
+                                        <br>
+                                        The QRCode hahs displays a QRCode representing a SHA256 hash of the given password. However, it remains quite complicated for some people to remember their passwords using this way, especially when there are a lot of chars.
+                                        <br>
+                                        <br>
+                                        <span class="number_list">2) VisualHash</span>
+                                        <br>
+                                        <br>
+                                        The VisualHash displays, as its title say, a visual representation of the hash of the given password. This way, you can easily remember the shape and the colors that are displayed, and therefore recognized it while typing your password again (in a password field with hidden chars), without anyone being able to spy over your shoulder.
+                                        <br>
+                                        <br>
+                                        <span class="number_list">3) Password spelling</span>
+                                        <br>
+                                        <br>
+                                        The password spelling intend to give you several mnemonic ways of remembering your password, using words.
+                                    </p>
+                                    <br>
+                                    <label>Complexity, Hackability and Strength</label>
+                                    <p>
+                                        Protect It! offer three ways for you to check on your password's skills:
+                                        <br>
+                                        <br>
+                                        <span class="number_list">1) Complexity</span>
+                                        <br>
+                                        <br>
+                                        Your password's complexity is described in percentage, so you have live information about how hard your password is to crack.
+                                        <br>
+                                        Complexify's default settings will enforce a minimum level of complexity that would mean brute-forcing should take ~600 years on a commodity desktop machine.
+                                        <br>
+                                        The 'perfect' password used to scale the complexity percentage would take 3x10^33 years. These are equivalent to a 12 character password with uppercase, lowercase and numbers included, and a 25 character password with uppercase, lowercase, numbers and a wide range of punctuation.
+                                        <br>
+                                        <br>
+                                        <span class="number_list">2) Hackability</span>
+                                        <br>
+                                        <br>
+                                        This is the hack meter that every site should show when you're creating an account with them. It tells you how many possible passwords it is possible to make based on the length and character classes used.
+                                        <br>
+                                        The password "1p" has 2 characters, one  a lowercase letter and the other one a number. To brute force this password, there are 26 possible letters and 10 possible numbers which is (10 + 26) * (10 + 26) = 1,296 possibilities.<span class="number_list">Less than a second to crack!</span>
+                                        <br>
+                                        These numbers are only for demonstration purposes. Please do your own research on password security! 
+                                        <br>
+                                        The numbers are derived from <a href="http://hashcat.net/oclhashcat/"  target="_blank">hashcat's site</a>.
+                                        <br>
+                                        <br>
+                                        <span class="number_list">3) Strength</span>
+                                        <br>
+                                        <br>
+                                        The jQuery Password Strength Meter is a plugin for Twitter Bootstrap that provides rulesets for visualy displaying the quality of a user typed in password.
+                                        <br>
+                                        It will show a colored bar right under the password field, indicating the password's strength that most websites will consider valid.
+                                        <br>
+                                        <i>N.B:</i> This feature is different from the complexity, which is explained above.
+                                    </p>
+                                    <br>
+                                    <label>About Protect It!</label>
+                                    <p>
+                                        Designed and developed by <a href="https://github.com/adrael" target="_blank">Rapha&euml;l MARQUES</a>, "Protect It!" is a web-based solution created for a <a href="http://www.developpez.com" target="_blank">Developpez.com</a> project.
+                                        <br>
+                                        The goal of this application is to help create safe and secure passwords, while remembering them without having to write them down somewhere.
+                                    </p>
+                                    <br>
+                                    <label>About me</label>
+                                    <p>
+                                        My name is Rapha&euml;l MARQUES, 22 y.o. and I'm currently studying Computer Science at the EPSI Bordeaux engineering school (33000, France).
+                                    </p>
+                                    <br>
+<<<<<<< HEAD
+                                    <label>TODO:</label>
+                                    <ul>
+                                        <li>Strength information about password</li>
+                                        <li>Minify protectit.js and libs.js</li>
+                                        <li>Check W3C</li>
+                                        <li>Add copyright (vizhash, qrcode, ....)</li>
+                                    </ul>
+=======
+                                    <label>Copyrights / Special thanks to</label>
+                                    <p>
+                                        Geek's password meter: <a href="http://jsfiddle.net/fh9FP/12/" target="_blank">Link</a>
+                                        <br>
+                                        VizHash: <a href="http://sametmax.com/vizhash-js-notre-implementation-libre-de-hash-visuel-utilisant-html5-canvas/" target="_blank">Link</a>
+                                        <br>
+                                        VisualHash: <a href="https://github.com/mozilla/watchdog-visualhash/tree/master/Jetpack/data/js" target="_blank">Link</a>
+                                        <br>
+                                        QRCode: <a href="http://davidshimjs.github.io/qrcodejs/" target="_blank">Link</a>
+                                        <br>
+                                        Complexify: <a href="http://danpalmer.me/jquery-complexify/" target="_blank">Link</a>
+                                        <br>
+                                        SHA256: <a href="http://www.movable-type.co.uk/scripts/sha256.html" target="_blank">Link</a>
+                                        <br>
+                                        Bootsrap Password strength: <a href="https://github.com/ablanco/jquery.pwstrength.bootstrap" target="_blank">Link</a>
+                                    </p>
+>>>>>>> End of the project, starting beta tests
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LOADING SCRIPTS -->
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/libs.min.js"></script>
+        <script type="text/javascript" src="js/protectit.min.js"></script>
+    </body>
+</html>
