@@ -1,0 +1,12 @@
+fabrice - When "Hide" is checked, deactivate Speller option.
+yoann - Speller is too short for long passwords, improve height changes
+yoann - Center QRCode when vizhash hidden
+yoann - When none of the generation checkboxes are checked, alert that lowercase will be checked by default
+yoann - main tab and options tab of same height
+bastien - Tu dois avoir une truc du style :
+if($("#qrcodehash").attr('checked','checked')
+$("#hashes").css("display","none")
+ou un .hide().
+Tu fais ça que lors d'un onchange de ton input principal, il faudrait aussi le faire lors du changement d'etat de tes checkbox.
+Et au lieu de faire un .hide(), faire un .addclass('CacheMoiCettePartieQueJeNeSauraisVoir');
+Sinon, trés sympa au niveau du graphisme, c'est simple et épuré, et meme responsive ! (juste ton col-md-12 sur le % qui chie un peu :p)
