@@ -55,9 +55,13 @@ div.row>div.col-md-12>div.form-group {
 	line-height: 3em;
 }
 
-input[type="password"], input[type="text"] {
+input[type="password"], input[type="text"], textarea {
 	font-weight: bold;
 	color: black;
+}
+
+textarea {
+	max-width: 100%;
 }
 
 div#qrcode {

@@ -27,18 +27,26 @@ function ProtectIt() {
 		var numbrSet = "0123456789";
 		var symbsSet = "&€#/\\)($*!<>+-=";
 		var charset = [];
+		
+		var checked = document.getElementById("symbols").checked || document.getElementById("uppercase").checked || document.getElementById("numbers").checked || document.getElementById("lowercase").checked;
+		
+		if(checked) {
+			if(document.getElementById("symbols").checked)
+				charset.push(symbsSet);
 
-		if(document.getElementById("symbols").checked)
-			charset.push(symbsSet);
+			if(document.getElementById("uppercase").checked)
+				charset.push(upperSet);
 
-		if(document.getElementById("uppercase").checked)
-			charset.push(upperSet);
+			if(document.getElementById("numbers").checked)
+				charset.push(numbrSet);
 
-		if(document.getElementById("numbers").checked)
-			charset.push(numbrSet);
-
-		if(document.getElementById("lowercase").checked || charset.length === 0)
+			if(document.getElementById("lowercase").checked)
+				charset.push(alphaSet);
+		} else {
+			alert("None of the \"Composition\" part's checkboxes are selected!\nLowercase will be default choice.");
+			document.getElementById("lowercase").checked = true;
 			charset.push(alphaSet);
+		}
 
 		return charset;
 	};
@@ -116,7 +124,7 @@ function ProtectIt() {
 								"North", "Octal", "Pint", "Quantum", "Rare", "South", "Tim", "Upper", "Vibe", "West", "Xeno", "Yes", "Zebra"];
 
 			var lowerSpeller = ["alabama", "bike", "cat", "done", "epic", "fail", "grocery", "high", "itchy", "john", "koala", "low", "man",
-								"new", "off", "plural", "queue", "rich", "slow", "tiny", "use", "view", "wear", "xeno", "youth", "zebra"];
+								"new", "off", "plural", "queue", "rich", "slow", "tiny", "use", "view", "wear", "xylophone", "youth", "zookeeper"];
 
 			var spelled = "";
 			for(var i = 0; i < password.length; ++i) {
@@ -155,10 +163,18 @@ function ProtectIt() {
 	// Allow the user to change the password field's display property
 	this.displayOrHidePassword = function() {
 		var field = document.getElementById("userInput");
+		var speller = document.getElementById("spellPassword");
+		var spellerDiv = document.getElementById("spellerDiv");
+
 		if(field.getAttribute("type") === "password") {
 			field.setAttribute("type", "text");
+			speller.removeAttribute("disabled");
+			this.spellPassword();
 		} else {
 			field.setAttribute("type", "password");
+			speller.setAttribute("disabled");
+			speller.checked = false;
+			spellerDiv.style.display = "none";
 		}
 	};
 
@@ -192,14 +208,15 @@ function ProtectIt() {
 	// Create a QRCode with a given data (here it is a SHA256 Hash of the password)
 	// qrcodeElement - the DOM Node which contains the QRCode
 	// isRequested - a boolean which indicates whether the user wants a QRCode or not
-	this.makeQRCode = function(qrcodeElement, isRequested) {
+	// isVisualHashRequested - a boolean which indicates whether the user wants a VisualHash or not
+	this.makeQRCode = function(qrcodeElement, isRequested, isVisualHashRequested) {
 		try {
 			var pwd = Sha256.hash(document.getElementById("userInput").value);
 			var hashes = document.getElementById('hashes');
 
 			if(pwd.length > 0 && isRequested) {
 				
-				if(qrcodeElement && qrcodeElement.getAttribute('data_fail')) {
+				if(qrcodeElement) {
 					hashes.removeChild(qrcodeElement);
 					qrcodeElement = null;
 				}
@@ -212,6 +229,18 @@ function ProtectIt() {
 															width : _W,
 															height : _H
 														});
+
+					if(!isVisualHashRequested) {
+						var divSpacer = document.createElement("div");
+						divSpacer.setAttribute("id", "qrCSpacer");
+						divSpacer.setAttribute("class", "col-md-2");
+						hashes.appendChild(divSpacer);
+
+					} else {
+						var divSpacer = document.getElementById("qrCSpacer");
+						if(divSpacer)
+							hashes.removeChild(divSpacer);
+					}
 
 					hashes.appendChild(qrcodeElement);
 				}
@@ -273,7 +302,7 @@ function ProtectIt() {
 			document.getElementById('hashes').style.display = "initial";
 			document.getElementById('hashesLabel').style.display = "-webkit-inline-box";
 			try {
-				this.makeQRCode(document.getElementById('qrcode'), qrcodeChecked);
+				this.makeQRCode(document.getElementById('qrcode'), qrcodeChecked, visualhashChecked);
 				this.makeVisualHash(document.getElementById('visualhash'), visualhashChecked);
 			} catch (err) {
 				alert(err.message);
