@@ -55,30 +55,33 @@ function ProtectIt() {
 	this.rollActions = function() {
 		var self = this;
 
-		// Trick: we have to wait a bit for the system to include the newly typed char
-		// else it will play with the existing chars and omit the new one
-		setTimeout(function() {
-			self.makeNormalQRCodeAndVisualHash();
-			self.spellPassword(document.getElementById("userInput").value);
-			self.calculatePasswordComplexityToCrack();
-			self.updateLengthField();
+		var value = $("#userInput").val().trim();
+		if(value.length > 0) {
+			// Trick: we have to wait a bit for the system to include the newly typed char
+			// else it will play with the existing chars and omit the new one
+			setTimeout(function() {
+				self.makeNormalQRCodeAndVisualHash();
+				self.spellPassword(value);
+				self.calculatePasswordComplexityToCrack();
+				self.updateLengthField();
 
-		    $(function () {
-		        $("#userInput").complexify({}, function (valid, complexity) {
-		            if (!valid) {
-		                $('#progress').css({'width':complexity + '%'}).removeClass('progressbarValid').removeClass('progressbarMiddle').addClass('progressbarInvalid');
-		            } else if(Math.round(complexity) >= 40 && Math.round(complexity) <= 65) {
-		                $('#progress').css({'width':complexity + '%'}).removeClass('progressbarInvalid').removeClass('progressbarValid').addClass('progressbarMiddle');
-		            } else {
-		            	$('#progress').css({'width':complexity + '%'}).removeClass('progressbarInvalid').removeClass('progressbarMiddle').addClass('progressbarValid');
-		            }
-		            $('#complexity').html(Math.round(complexity) + '%');
-		        });
-		    });
+			    $(function () {
+			        $("#userInput").complexify({}, function (valid, complexity) {
+			            if (!valid) {
+			                $('#progress').css({'width':complexity + '%'}).removeClass('progressbarValid').removeClass('progressbarMiddle').addClass('progressbarInvalid');
+			            } else if(Math.round(complexity) >= 40 && Math.round(complexity) <= 65) {
+			                $('#progress').css({'width':complexity + '%'}).removeClass('progressbarInvalid').removeClass('progressbarValid').addClass('progressbarMiddle');
+			            } else {
+			            	$('#progress').css({'width':complexity + '%'}).removeClass('progressbarInvalid').removeClass('progressbarMiddle').addClass('progressbarValid');
+			            }
+			            $('#complexity').html(Math.round(complexity) + '%');
+			        });
+			    });
 
-		    $('#userInput').keyup();
+			    $('#userInput').keyup();
 
-		}, 100);
+			}, 100);
+		}
 	};
 
 	// Link the password field's value changes with the length field in the options
@@ -127,7 +130,7 @@ function ProtectIt() {
 								"new", "off", "plural", "queue", "rich", "slow", "tiny", "use", "view", "wear", "xylophone", "youth", "zookeeper"];
 
 			var spelled = [];
-			foundLabel: {
+			foundLabel:
 				for(var i = 0; i < password.length; ++i) {
 					var isFound = false;
 					
@@ -151,7 +154,6 @@ function ProtectIt() {
 						spelled.push(password.charAt(i));
 					}
 				}
-			}
 			document.getElementById('spellerInput').value = spelled.join(' ');
 		} else {
 			document.getElementById('spellerDiv').style.display = "none";
@@ -170,7 +172,7 @@ function ProtectIt() {
 			this.spellPassword();
 		} else {
 			field.setAttribute("type", "password");
-			speller.setAttribute("disabled");
+			speller.setAttribute("disabled", "");
 			speller.checked = false;
 			spellerDiv.style.display = "none";
 		}
@@ -199,7 +201,7 @@ function ProtectIt() {
 		if(field.readOnly) {
 			field.removeAttribute("readonly");
 		} else {
-			field.setAttribute("readonly");
+			field.setAttribute("readonly", "");
 		}
 	};
 
