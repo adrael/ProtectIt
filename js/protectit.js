@@ -126,35 +126,33 @@ function ProtectIt() {
 			var lowerSpeller = ["alabama", "bike", "cat", "done", "epic", "fail", "grocery", "high", "itchy", "john", "koala", "low", "man",
 								"new", "off", "plural", "queue", "rich", "slow", "tiny", "use", "view", "wear", "xylophone", "youth", "zookeeper"];
 
-			var spelled = "";
-			for(var i = 0; i < password.length; ++i) {
-				var isFound = false;
-				
-				for(var j = 0; j < upperSpeller.length; ++j) {
-					if(upperSpeller[j].charAt(0) === password.charAt(i)) {
-						isFound = true;
-						spelled += (spelled.length > 0 ? " " : "") + upperSpeller[j];
-						break;
+			var spelled = [];
+			foundLabel: {
+				for(var i = 0; i < password.length; ++i) {
+					var isFound = false;
+					
+					for(var j = 0; j < upperSpeller.length; ++j) {
+						if(upperSpeller[j].charAt(0) === password.charAt(i)) {
+							spelled.push(upperSpeller[j]);
+							continue foundLabel;
+						}
 					}
-				}
-
-				if(isFound) {
-					continue;
-				}
-
-				for(var k = 0; k < lowerSpeller.length; ++k) {
-					if(lowerSpeller[k].charAt(0) === password.charAt(i)) {
-						isFound = true;
-						spelled += (spelled.length > 0 ? " " : "") + lowerSpeller[k];
-						break;
+	
+	
+					for(var k = 0; k < lowerSpeller.length; ++k) {
+						if(lowerSpeller[k].charAt(0) === password.charAt(i)) {
+							isFound = true;
+							spelled.push(lowerSpeller[k]);
+							break;
+						}
 					}
-				}
-
-				if(!isFound) {
-					spelled += (spelled.length > 0 ? " " : "") + password.charAt(i);
+	
+					if(!isFound) {
+						spelled.push(password.charAt(i));
+					}
 				}
 			}
-				document.getElementById('spellerInput').value = spelled;
+			document.getElementById('spellerInput').value = spelled.join(' ');
 		} else {
 			document.getElementById('spellerDiv').style.display = "none";
 		}
