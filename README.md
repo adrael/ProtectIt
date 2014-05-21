@@ -1,6 +1,8 @@
 ProtectIt!
 ==========
 
+-- Winner of a Developpez.com contest! --
+
 A password generator with some interesting stuff in it.
 
 Designed and developed by Raphaël MARQUES, "Protect It!" is a web-based solution created for a Developpez.com project.
